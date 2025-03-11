@@ -17,6 +17,8 @@ However, there are some bugs:
 
 ----------------------------------------------------------------
 
-*3.11 Version:*-fixver 1.1
+*3.11 Version:-fixver 1.1*
 
 Fix the problem cause monochrome. Still couldn't extract watermark.
+
+Notice: The watermark could only be 64*64.
