@@ -15,3 +15,8 @@ However, there are some bugs:
   1. The output pic will be monochrome.
   2. Couldn't extract watermark.
 
+----------------------------------------------------------------
+
+*3.11 Version:*-fixver 1.1
+
+Fix the problem cause monochrome. Still couldn't extract watermark.
