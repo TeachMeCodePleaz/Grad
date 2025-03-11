@@ -1,0 +1,24 @@
+graph TD;
+    A[开始] --> B(初始化);
+    B --> C{是否为彩色图像};
+    C -- 是 --> D[YUV空间转换];
+    C -- 否 --> E(直接处理灰度图像);
+    D --> F(获取Y通道);
+    F --> G;
+    E --> G(获取特征点<br>SIFT+ORB);
+    G --> H{嵌入水印};
+    H --> I[空间域嵌入<br>特征点区域修改];
+    H --> J[频域嵌入<br>DWT,DCT];
+    I --> K(合并结果);
+    J --> K;
+    K --> L{是否为彩色图像};
+    L -- 是 --> M(YUV转BGR);
+    L -- 否 --> N(返回灰度图像);
+    M --> O[结束];
+    N --> O;
+
+    %% 注释部分
+    classDef grey fill:#ddd,stroke:#fff,stroke-width:4px,color:#000;
+    classDef blue fill:#7bf,stroke:#39f,stroke-width:2px,color:#000;
+    class A,O grey
+    class B,C,D,E,F,G,H,I,J,K,L,M,N blue
