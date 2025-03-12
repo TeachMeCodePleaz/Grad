@@ -1,0 +1,32 @@
+graph TD
+    %% 水印嵌入流程
+    subgraph 水印嵌入流程
+        A[用户选择原始图片] --> B[用户选择水印图片]
+        B --> C[系统读取并预处理图像]
+        C --> D[提取SIFT和ORB特征点]
+        D --> E[空间域嵌入：特征点区域LSB修改]
+        D --> F[频域嵌入：DWT+DCT系数修改]
+        E --> G[合并空间域和频域结果]
+        F --> G
+        G --> H[保存带水印图像]
+    end
+
+    %% 水印提取流程
+    subgraph 水印提取流程
+        I[用户选择带水印图片] --> J[检测图像特征点]
+        J --> K[空间域提取：采样特征区域LSB]
+        J --> L[频域提取：DWT+DCT系数分析]
+        K --> M[加权融合两种域信息]
+        L --> M
+        M --> N[二值化重建水印]
+        N --> O[显示提取结果]
+    end
+
+    %% GUI交互流程
+    subgraph GUI交互
+        P[用户点击加载按钮] --> Q[显示原始图片]
+        R[用户点击嵌入按钮] --> S[调用WatermarkSystem.embed_watermark]
+        T[用户点击提取按钮] --> U[调用WatermarkSystem.extract_watermark]
+        S --> H
+        U --> O
+    end

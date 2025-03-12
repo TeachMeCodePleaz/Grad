@@ -61,10 +61,10 @@ class AdvancedWatermark:
             coeffs.append((h, v, d))  # 存储顺序：第0个元素是第一层细节
             current = ca
 
-        # ==== 关键修复1：记录DCT前的原始低频尺寸 ====
+        # ==== 修复1：记录DCT前的原始低频尺寸 ====
         original_low_freq_shape = current.shape  # 保存分解后的低频尺寸 (95,119)
 
-        # DCT分块填充处理（关键修改2：确保DCT块尺寸正确）
+        # DCT分块填充处理（修改2：确保DCT块尺寸正确）
         pad_h_dct = (self.dct_block_size - current.shape[0] % self.dct_block_size) % self.dct_block_size
         pad_w_dct = (self.dct_block_size - current.shape[1] % self.dct_block_size) % self.dct_block_size
         current_padded = np.pad(current, ((0, pad_h_dct), (0, pad_w_dct)), mode='symmetric')
@@ -143,13 +143,13 @@ class AdvancedWatermark:
         max_blocks_w = w // self.dct_block_size
         max_blocks = max_blocks_h * max_blocks_w
 
-        # 调整水印尺寸适配实际容量（关键修复1）
+        # 调整水印尺寸适配实际容量
         actual_wm_size = min(max_blocks, np.prod(wm_shape))
         wm_side = int(np.sqrt(actual_wm_size))  # 计算最大整数边
         actual_wm_size = wm_side ** 2  # 确保是完美平方数
         wm_shape = (wm_side, wm_side)
 
-        # 频域提取（关键修复2：严格限制循环次数）
+        # 频域提取
         blocks_extracted = 0
         for i in range(0, max_blocks_h * self.dct_block_size, self.dct_block_size):
             for j in range(0, max_blocks_w * self.dct_block_size, self.dct_block_size):
@@ -158,11 +158,11 @@ class AdvancedWatermark:
                 block = ca[i:i + self.dct_block_size, j:j + self.dct_block_size]
                 if block.shape == (self.dct_block_size, self.dct_block_size):
                     dct_block = cv2.dct(block)
-                    wm_freq.append(dct_block[3, 4] / self.alpha_dct)
+                    wm_freq.append(dct_block[4, 5] / self.alpha_dct)
                     blocks_extracted += 1
         wm_freq = wm_freq[:actual_wm_size]
 
-        # 空间域提取（关键修复3：动态计算采样量）
+        # 空间域提取
         keypoints = self._get_feature_points(marked_img)
         wm_spatial = []
         required_bits = actual_wm_size
@@ -182,7 +182,7 @@ class AdvancedWatermark:
                 total_collected += collect_num
         wm_spatial = wm_spatial[:actual_wm_size]
 
-        # 最终长度验证（关键修复）
+        # 最终长度验证（*）
         min_len = min(len(wm_freq), len(wm_spatial))
 
         # 强制对齐到最大完美平方数

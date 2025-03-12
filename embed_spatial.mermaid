@@ -1,0 +1,28 @@
+graph TD
+    A[开始] --> B[初始化掩模]
+    B --> C{遍历关键点}
+    C -->|是| D[在掩模上标记关键点区域]
+    C -->|否| E[展平图像]
+    D --> E
+    E --> F[扩展水印长度]
+    F --> G[嵌入水印到图像]
+    G --> H[应用掩模]
+    H --> I[返回处理后的图像]
+    I --> J[结束]
+
+    subgraph 初始化掩模
+        B
+    end
+
+    subgraph 遍历关键点并标记
+        C --> D
+    end
+
+    subgraph 图像与水印处理
+        direction LR
+        E --> F --> G
+    end
+
+    subgraph 应用掩模生成最终图像
+        H
+    end

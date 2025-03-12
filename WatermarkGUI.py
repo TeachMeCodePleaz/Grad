@@ -30,13 +30,19 @@ class WatermarkSystem:
         cv2.imwrite(output_path, marked)
         return marked
 
-    def extract_watermark(self, marked_path, wm_shape=(64, 64)):
+    def extract_watermark(self, marked_path):
         marked = cv2.imread(marked_path, 0)
         if marked is None:
             raise ValueError("无法读取带水印图像")
 
-        extracted = self.wm_engine.extract(marked)
-        return extracted.reshape(wm_shape)
+        # 自动识别水印尺寸（示例逻辑）
+        h, w = marked.shape
+        max_blocks = (h // 8) * (w // 8)
+        wm_side = int(np.sqrt(max_blocks))
+        wm_shape = (wm_side, wm_side)
+
+        extracted = self.wm_engine.extract(marked, wm_shape)
+        return extracted  # 直接返回已调整形状的结果
 
 
 class WatermarkGUI(QMainWindow):
@@ -48,7 +54,7 @@ class WatermarkGUI(QMainWindow):
 
     def initUI(self):
         # 主窗口设置
-        self.setWindowTitle("抗截图水印系统 v1.0")
+        self.setWindowTitle("抗截图水印系统 v1.1")
         self.setGeometry(100, 100, 800, 600)
 
         # 中央组件
